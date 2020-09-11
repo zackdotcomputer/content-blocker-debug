@@ -1,0 +1,28 @@
+@tailwind base;
+
+/* Write your own custom base styles here */
+
+a {
+  text-decoration: underline;
+
+  @apply transition duration-300 ease-in-out;
+}
+
+a:hover {
+  @apply text-blue-500;
+}
+
+/* Start purging... */
+@tailwind components;
+/* Stop purging. */
+
+/* Write you own custom component styles here */
+.btn-blue {
+  @apply bg-blue-500 text-white font-bold py-2 px-4 rounded;
+}
+
+/* Start purging... */
+@tailwind utilities;
+/* Stop purging. */
+
+/* Your own custom utilities */
