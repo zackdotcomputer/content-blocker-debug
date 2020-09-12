@@ -1,30 +1,13 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+[![Netlify Status](https://api.netlify.com/api/v1/badges/86f46aca-d774-4239-b9eb-0ec1e05fb231/deploy-status)](https://app.netlify.com/sites/contentblockerdebugger/deploys)
 
-## Getting Started
+# Purpose
 
-First, run the development server:
+This is the repository that backs the [Webkit Content Blocker Debugger](https://contentblockerdebugger.netlify.app/). The goal of this site is to provide a simple way to analyze which rules in the (sometimes very large) JSON definition files that back [Apple's Webkit Content Blocker](https://developer.apple.com/documentation/safariservices/creating_a_content_blocker) system will fire for a particular load.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+# Methodology
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The debugger works entirely on your device, so your definition files are never uploaded over the internet to another service. The site implements the spec defined on Apple's site for the Content Blocker system. You can provided it with a call your device might make, and it will parse that call through the rules in your definitions file and return to you the end effect and a list of all rules which match the query (even if they were ignored or overpowered by another rule).
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+# Who
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+I'm [Zack Sheppard](https://zacksheppard.com). I make iOS apps. Feel free to contact me if you need an iOS app made or if you want to collaborate on something.
