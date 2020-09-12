@@ -1,6 +1,6 @@
 import React from "react";
-import { BlockerContext } from "../components/model/BlockerContext";
-import RootContentBlocker from "../components/model/ContentBlocker";
+import { BlockerContext } from "../model/BlockerContext";
+import RootContentBlocker from "../model/ContentBlocker";
 import "../styles/index.css";
 
 function MyApp({ Component, pageProps }) {

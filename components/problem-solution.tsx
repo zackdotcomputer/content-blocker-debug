@@ -56,7 +56,7 @@ export default function ProblemSolution({ onBeginDebug }: Props) {
               which rules match.
             </p>
             <form
-              className="bg-gray-200 rounded-lg p-8 flex flex-col md:ml-auto w-full mt-10 md:mt-0"
+              className="rounded-box flex flex-col md:ml-auto w-full mt-10 md:mt-0"
               onSubmit={(e) => {
                 e.preventDefault();
                 handleSubmit();
@@ -76,11 +76,7 @@ export default function ProblemSolution({ onBeginDebug }: Props) {
               {isLoading ? (
                 <p className="text-gray-500 italic">Loading...</p>
               ) : (
-                <input
-                  type="submit"
-                  className="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg"
-                  value="Get started"
-                />
+                <input type="submit" className="btn-blue" value="Get started" />
               )}
               {error && <p className="text-red-700">{error}</p>}
             </form>

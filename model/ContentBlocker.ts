@@ -1,3 +1,7 @@
+import { BlockResult, ruleMatches, RuleMatchResult } from "./BlockMatches";
+import { BlockQuery } from "./BlockQuery";
+import { ActionType, isActionType, LoadType, ResourceType } from "./BlockTypes";
+
 export default class RootContentBlocker {
   rules: ContentBlockerRule[];
 
@@ -24,6 +28,61 @@ export default class RootContentBlocker {
       }
     );
   }
+
+  query(query: BlockQuery): Promise<BlockResult> {
+    return new Promise<BlockResult>((resolve, _) => {
+      const rulesMatching = this.rules.flatMap((r, i) => {
+        const match = ruleMatches(r, i, query);
+        return !!match ? [match] : [];
+      });
+
+      let matchesInEffect: RuleMatchResult[] = [];
+      let matchesOverpowered: RuleMatchResult[] = [];
+
+      rulesMatching.forEach((match) => {
+        if (match.rule.action.action === ActionType.ignorePreviousRules) {
+          // Ignore previous means we overpower all rules that were in effect
+          matchesInEffect.forEach((m) => {
+            m.overpoweredByIndex = match.ruleIndex;
+          });
+          matchesOverpowered = matchesOverpowered.concat(matchesInEffect);
+          matchesInEffect = [match];
+        } else if (match.rule.action.action === ActionType.block) {
+          // Block overpowers all rules except other blocks
+          let leftInEffect: RuleMatchResult[] = [];
+          matchesInEffect.forEach((m) => {
+            if (m.rule.action.action === ActionType.block) {
+              leftInEffect.push(m);
+            } else {
+              m.overpoweredByIndex = match.ruleIndex;
+              matchesOverpowered.push(m);
+            }
+          });
+
+          matchesInEffect = leftInEffect.concat(match);
+        } else {
+          // We have a normal rule, just calculate whether it goes into effect.
+          const existingBlock = matchesInEffect.find(
+            (m) => m.rule.action.action === ActionType.block
+          );
+
+          if (existingBlock) {
+            // Any other rule is overpowered if we're already just blocking the page
+            match.overpoweredByIndex = existingBlock.ruleIndex;
+            matchesOverpowered.push(match);
+          } else {
+            // If we're not blocking and this isn't a block or ignore, it just goes into effect
+            matchesInEffect.push(match);
+          }
+        }
+      });
+
+      resolve({
+        rules: matchesInEffect,
+        matchingIgnoredRules: matchesOverpowered
+      });
+    });
+  }
 }
 
 export interface ContentBlockerRule {
@@ -31,31 +90,24 @@ export interface ContentBlockerRule {
   trigger: ContentBlockerTrigger;
 }
 
-enum ResourceType {
-  document = "document",
-  image = "image",
-  stylesheet = "style-sheet",
-  script = "script",
-  font = "font",
-  raw = "raw",
-  svg = "svg-document",
-  media = "media",
-  popup = "popup"
-}
-
-enum LoadType {
-  firstParty = "first-party",
-  thirdParty = "third-party"
+export enum TriggerComponents {
+  urlFilter,
+  ifDomains,
+  unlessDomains,
+  ifTopURL,
+  unlessTopURL,
+  resourceType,
+  loadType
 }
 
 export class ContentBlockerTrigger {
   urlFilter: RegExp;
 
-  ifDomains?: String[];
-  unlessDomains?: String[];
+  ifDomains?: string[];
+  unlessDomains?: string[];
 
-  ifTopURL?: String[];
-  unlessTopURL?: String[];
+  ifTopURL?: string[];
+  unlessTopURL?: string[];
 
   resourceTypes?: ResourceType[];
 
@@ -121,17 +173,6 @@ export class ContentBlockerTrigger {
 
     this.urlFilter = RegExp(rawFilter, isCaseSensitive ? "" : "i");
   }
-}
-
-enum ActionType {
-  block = "block",
-  blockCookies = "block-cookies",
-  cssDisplayNone = "css-display-none",
-  ignorePreviousRules = "ignore-previous-rules",
-  makeHttps = "make-https"
-}
-function isActionType(test: any): test is ActionType {
-  return Object.values(ActionType).indexOf(test) !== -1;
 }
 
 export class ContentBlockerAction {

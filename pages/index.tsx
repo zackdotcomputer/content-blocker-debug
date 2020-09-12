@@ -1,8 +1,8 @@
 import Nav from "../components/nav";
 import ProblemSolution from "../components/problem-solution";
-import RootContentBlocker from "../components/model/ContentBlocker";
+import RootContentBlocker from "../model/ContentBlocker";
 import { useContext } from "react";
-import { BlockerContext } from "../components/model/BlockerContext";
+import { BlockerContext } from "../model/BlockerContext";
 import { useRouter } from "next/router";
 
 export default function IndexPage() {
