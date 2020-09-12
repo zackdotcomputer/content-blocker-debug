@@ -19,7 +19,7 @@ export default function QueryResults({ results }: Props) {
         ))}
       </div>
       <div className="w-full pb-5 mb-5 border-b-2 border-color space-y-2">
-        <h3 className="font-bold text-gray-600">Rules that match but are overpowered:</h3>
+        <h3 className="font-bold text-gray-500">Rules that match but are overpowered:</h3>
         {results.matchingIgnoredRules.map((match, i) => (
           <RuleCard match={match} isMatching={false} key={"overpowered-rule-" + i} />
         ))}
@@ -68,8 +68,11 @@ function QueryEffects({ results }: Props) {
       <h2 className="font-bold">In the end, this resource will:</h2>
       <ul>
         {results.rules.map((match, i) => (
-          <li className="list-disc pl-1 ml-6" key={"effect" + i}>
-            {getRuleSummary(match.rule)}
+          <li key={"effect" + i}>
+            {getRuleSummary(match.rule)}{" "}
+            <a className="text-gray-500 italic" href={"#rule-" + match.ruleIndex}>
+              #{match.ruleIndex}
+            </a>
           </li>
         ))}
       </ul>

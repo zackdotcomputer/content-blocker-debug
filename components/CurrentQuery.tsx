@@ -10,7 +10,7 @@ export default function CurrentQuery({ query, onStartNewQuery }: Props) {
     <div className="bg-white px-8 py-5 flex flex-col w-full md:w-3/4 mx-auto mt-10 md:mt-0 items-center space-y-2">
       <h2 className="text-xl">
         Showing results for{" "}
-        <a href={query.url} target="_blank">
+        <a href={query.url} target="_blank" rel="external nofollow">
           {query.url}
         </a>
       </h2>

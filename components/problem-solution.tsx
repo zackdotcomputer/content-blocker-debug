@@ -66,7 +66,7 @@ export default function ProblemSolution({ onBeginDebug }: Props) {
                 Select your blocker JSON
               </h2>
               <input
-                className="bg-white rounded border border-gray-400 focus:outline-none focus:border-indigo-500 text-base px-4 py-2 mb-4"
+                className="bg-white rounded border border-color focus:outline-none focus:border-indigo-500 text-base px-4 py-2 mb-4"
                 id="blocker-json"
                 name="blocker-json"
                 accept="application/json"

@@ -177,10 +177,10 @@ export class ContentBlockerTrigger {
 
 export class ContentBlockerAction {
   action: ActionType;
-  selector?: string;
+  selector?: string[];
 
   constructor(rawAction: Object) {
-    this.selector = rawAction["selector"];
+    this.selector = rawAction["selector"]?.split(",");
     this.action = rawAction["type"];
 
     if (!isActionType(this.action)) {

@@ -12,6 +12,10 @@ a:hover {
   @apply text-blue-500;
 }
 
+li {
+  @apply list-disc pl-1 ml-6;
+}
+
 input,
 select {
   @apply p-1 rounded-sm;

@@ -16,38 +16,86 @@ export default function RuleCard({ match, isMatching }: Props) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="rounded-box m-y-2 flex flex-col items-stretch" id={"rule-" + match.ruleIndex}>
-      <div
-        className={
-          "flex flex-row font-semibold text-lg justify-between" + isMatching ? "" : "text-gray-600"
-        }
+    <div
+      className={
+        "rounded-box m-y-2 flex flex-col items-stretch space-y-4" +
+        (isMatching ? "" : " opacity-50") +
+        (isExpanded ? "" : " cursor-pointer")
+      }
+      id={"rule-" + match.ruleIndex}
+      onClick={isExpanded ? undefined : (_) => setIsExpanded(true)}
+    >
+      <h4
+        className="cursor-pointer flex flex-row font-semibold justify-between"
         onClick={(_) => setIsExpanded(!isExpanded)}
       >
-        <h4 className="font-semibold">{getRuleTitle(match.rule)}</h4>
-        <h6 className="italic font-light">#{match.ruleIndex}</h6>
-      </div>
+        <span
+          className={"font-semibold pr-2" + (!!match.overpoweredByIndex ? " line-through" : "")}
+        >
+          {getRuleTitle(match.rule)}
+        </span>{" "}
+        {!!match.overpoweredByIndex && (
+          <span>
+            Overpowered by{" "}
+            <a href={"#rule-" + match.overpoweredByIndex}>#{match.overpoweredByIndex}</a>
+          </span>
+        )}
+        <span className="italic font-light text-right flex-grow text-gray-600">
+          #{match.ruleIndex}
+        </span>
+      </h4>
       {isExpanded && (
-        <div className="border-gray-500 border-t-2 p-t-3 m-t-3 flex flex-col space-y-2 items-stretch">
-          <h5>Trigger Rules:</h5>
-          {[
-            TriggerComponents.urlFilter,
-            TriggerComponents.ifDomains,
-            TriggerComponents.unlessDomains,
-            TriggerComponents.loadType,
-            TriggerComponents.ifTopURL,
-            TriggerComponents.unlessTopURL,
-            TriggerComponents.resourceType
-          ].map((component, i) => {
-            <RuleComponent
-              key={"rule-" + match.ruleIndex + "-component-" + i}
-              component={component}
-              matches={match.matchedComponents}
-              trigger={match.rule.trigger}
-            />;
-          })}
-        </div>
+        <>
+          <div className="border-color border-t-2 pt-3 mt-3 flex flex-col space-y-2 items-stretch">
+            {[
+              TriggerComponents.urlFilter,
+              TriggerComponents.ifDomains,
+              TriggerComponents.unlessDomains,
+              TriggerComponents.loadType,
+              TriggerComponents.ifTopURL,
+              TriggerComponents.unlessTopURL,
+              TriggerComponents.resourceType
+            ].map((component, i) => (
+              <RuleComponent
+                key={"rule-" + match.ruleIndex + "-component-" + i}
+                component={component}
+                matches={match.matchedComponents}
+                trigger={match.rule.trigger}
+              />
+            ))}
+          </div>
+          {match.rule.action.action === ActionType.cssDisplayNone && (
+            <div className="w-full">
+              <RuleSelectors selectors={match.rule.action.selector} />
+            </div>
+          )}
+        </>
       )}
     </div>
+  );
+}
+
+function RuleSelectors({ selectors }: { selectors: string[] | undefined }) {
+  if (!selectors) {
+    return <></>;
+  }
+
+  const maxSelectors = 10;
+
+  const leftover = selectors.length - maxSelectors;
+
+  const toRender: string[] = leftover > 0 ? selectors.slice(0, maxSelectors) : selectors;
+
+  return (
+    <>
+      <h6 className="text-gray-600">Hide elements matching:</h6>
+      <ul>
+        {toRender.map((selector, i) => (
+          <li key={"selector-" + i}>{selector}</li>
+        ))}
+        {leftover > 0 && <li className="italic">And {leftover} more...</li>}
+      </ul>
+    </>
   );
 }
 
@@ -67,13 +115,12 @@ function RuleComponent({
   }
 
   const isMatch = matches.indexOf(component) !== -1;
-  const titleClass = isMatch ? "" : "text-gray-400";
-  const bodyClass = isMatch ? "text-green-600" : "text-gray-300";
+  const bodyClass = isMatch ? "text-green-600" : "text-gray-600";
 
   return (
     <div>
-      <h6 className={titleClass}>{getTriggerComponentTitle(component)}:</h6>
-      <p className={bodyClass}>{displayable}</p>
+      <h6 className="text-gray-600">{getTriggerComponentTitle(component)}:</h6>
+      <p className={"font-semibold " + bodyClass}>{displayable}</p>
     </div>
   );
 }
@@ -96,7 +143,7 @@ function getDisplayTriggerComponent(
     case TriggerComponents.resourceType:
       return trigger.resourceTypes?.join(", ");
     case TriggerComponents.urlFilter:
-      return trigger.urlFilter.source;
+      return "/" + trigger.urlFilter.source + "/i";
   }
 }
 
@@ -115,7 +162,7 @@ function getTriggerComponentTitle(component: TriggerComponents): string {
     case TriggerComponents.resourceType:
       return "If Resource Type Is";
     case TriggerComponents.urlFilter:
-      return "URL Must Match";
+      return "If URL Matches";
   }
 }
 
@@ -145,6 +192,6 @@ export function getRuleTitle(rule: ContentBlockerRule): string {
     case ActionType.makeHttps:
       return "Redirect to HTTPS";
     case ActionType.cssDisplayNone:
-      return "Apply CSS display: none";
+      return "Hide Elements with CSS";
   }
 }

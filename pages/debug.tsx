@@ -37,6 +37,9 @@ export default function DebugPage() {
 
   return (
     <div>
+      <head>
+        <meta name="robots" content="noindex" />
+      </head>
       <Nav />
       <div className="text-gray-700 body-font overflow-hidden">
         <div className="container pb-5 mx-auto">
