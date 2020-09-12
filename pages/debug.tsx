@@ -2,10 +2,11 @@ import Nav from "../components/nav";
 import React, { useContext, useEffect, useState } from "react";
 import { BlockerContext } from "../model/BlockerContext";
 import { useRouter } from "next/router";
-import { BlockQuery, BlockResult } from "../model/BlockQuery";
+import { BlockQuery } from "../model/BlockQuery";
 import QueryResults from "../components/QueryResults";
 import QueryBuilder from "../components/QueryBuilder";
 import CurrentQuery from "../components/CurrentQuery";
+import { BlockResult } from "../model/BlockMatches";
 
 export default function DebugPage() {
   const [blocker, _] = useContext(BlockerContext);
