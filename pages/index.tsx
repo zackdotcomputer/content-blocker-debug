@@ -48,7 +48,6 @@ export default function IndexPage() {
     <div>
       <Nav />
       <ProblemSolution onBeginDebug={onBeginDebug} />
-      <hr />
     </div>
   );
 }

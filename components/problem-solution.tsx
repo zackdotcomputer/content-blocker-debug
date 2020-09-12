@@ -51,8 +51,8 @@ export default function ProblemSolution({ onBeginDebug }: Props) {
               A simple debugger
             </h2>
             <p className="leading-relaxed mb-8">
-              This site will load your content blocker from disk or URL, entirely in localstorage so
-              nothing is ever logged to a remote site. It then lets you plug in URLs and see quickly
+              This site will load your content blocker from disk, entirely in your browser so
+              nothing is ever sent to a remote site. It then lets you plug in URLs and see quickly
               which rules match.
             </p>
             <form
